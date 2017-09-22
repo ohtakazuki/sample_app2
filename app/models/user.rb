@@ -7,10 +7,11 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX }, 
                     uniqueness: { case_sensitive: false }
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }
+  # nilを許可してもbcryptで「nilでない時だけdigestを更新」するから大丈夫
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # 渡された文字列のハッシュ値を返す
-  # パスワード、記憶トークンに使用
+  # パスワードのテスト用、記憶トークンに使用
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
                                                   BCrypt::Engine.cost
